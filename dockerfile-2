@@ -1,0 +1,37 @@
+2.	pipeline {
+3.	    agent any
+4.	    stages {
+5.	        stage('Build') {
+6.	            steps {
+7.	                echo 'Running build automation'
+8.	                sh './gradlew build --no-daemon'
+9.	                archiveArtifacts artifacts: 'dist/trainSchedule.zip'
+10.	            }
+11.	        }
+12.	        stage('Build Docker Image') {
+13.	            when {
+14.	                branch 'master'
+15.	            }
+16.	            steps {
+17.	                script {
+18.	                    app = docker.build("<DOCKER_HUB_USERNAME>/train-schedule")
+19.	                    app.inside {
+20.	                        sh 'echo $(curl localhost:8080)'
+21.	                    }
+22.	                }
+23.	            }
+24.	        }
+25.	        stage('Push Docker Image') {
+26.	            when {
+27.	                branch 'master'
+28.	            }
+29.	            steps {
+30.	                script {
+31.	                    docker.withRegistry('https://registry.hub.docker.com', 'docker_hub_login') {
+32.	                        app.push("${env.BUILD_NUMBER}")
+33.	                        app.push("latest")
+34.	                    }
+35.	                }
+36.	            }
+37.	        }
+38.	    }   
