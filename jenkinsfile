@@ -6,5 +6,10 @@ pipeline {
                 git branch: 'main', credentialsId: 'ec649b24-3e19-4fed-9415-c0ffab2edddb', url: 'https://github.com/Sai8kumar/Master.git'
             }
         }
+        stage('Unit Testing'){
+            steps{
+                sh 'mvn test'
+            }
+        }
     }
 }
