@@ -1,0 +1,10 @@
+pipeline {
+    agent any
+    stage{
+        stage('git checkout') {
+            steps{
+                git branch: 'main', credentialsId: 'ec649b24-3e19-4fed-9415-c0ffab2edddb', url: 'https://github.com/Sai8kumar/Master.git'
+            }
+        }
+    }
+}
